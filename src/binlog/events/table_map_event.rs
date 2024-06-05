@@ -1260,9 +1260,9 @@ impl<'a> Iterator for OptionalMetadataIter<'a> {
                             Ok(OptionalMetadataField::ColumnVisibility(flags))
                         }
                     },
-                    Err(_) => Err(io::Error::new(
+                    Err(e) => Err(io::Error::new(
                         io::ErrorKind::InvalidData,
-                        "Unknown optional metadata field type",
+                        format!("Unknown optional metadata field type: {}", e),
                     )),
                 }
             })
