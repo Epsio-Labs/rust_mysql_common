@@ -122,8 +122,12 @@ impl Event {
         input.read_exact(&mut header_buf)?;
         let header = BinlogEventHeader::deserialize((), &mut ParseBuf(&header_buf))?;
 
+        println!("header: {:?}", header);
+
         let mut data = vec![0_u8; (S(header.event_size() as usize) - S(binlog_header_len)).0];
         input.read_exact(&mut data).unwrap();
+
+        println!("data: {:?}", data);
 
         let is_fde = header.event_type.0 == EventType::FORMAT_DESCRIPTION_EVENT as u8;
         let mut bytes_to_truncate = 0;
@@ -238,6 +242,7 @@ impl Event {
     pub fn read_event<'a, T: BinlogEvent<'a>>(&'a self) -> io::Result<T> {
         // we'll use data.len() here because of truncated event footer
         let event_size = BinlogEventHeader::LEN + self.data.len();
+        println!("event_size: {:?}", event_size);
         let event_data = &mut ParseBuf(&self.data);
         let ctx = BinlogCtx::new(event_size, &self.fde);
 
