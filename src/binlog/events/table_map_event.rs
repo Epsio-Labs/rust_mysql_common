@@ -1160,6 +1160,7 @@ impl<'a> OptionalMetadataIter<'a> {
     fn read_tlv(&mut self) -> io::Result<(RawConst<u8, OptionalMetadataFieldType>, &'a [u8])> {
         let t = self.data.read_u8()?;
         let l = self.data.read_u8()? as usize;
+        println!("TLV -> Type={}: Length={}\n", t, l);
         let v = match self.data.get(..l) {
             Some(v) => v,
             None => {
@@ -1170,12 +1171,14 @@ impl<'a> OptionalMetadataIter<'a> {
                 ));
             }
         };
+        println!("TLV -> Value={:?}\n", v);
         self.data = &self.data[l..];
+        println!("TLV -> Remaining={:?}\n", self.data);
         Ok((RawConst::new(t), v))
     }
 
     /// Returns next tlv, if any.
-    fn next_tlv(
+    fn  next_tlv(
         &mut self,
     ) -> Option<io::Result<(RawConst<u8, OptionalMetadataFieldType>, &'a [u8])>> {
         if self.data.is_empty() {
