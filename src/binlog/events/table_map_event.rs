@@ -9,7 +9,7 @@
 use std::{borrow::Cow, cmp::min, convert::TryFrom, io, iter::Peekable};
 
 use bitvec::prelude::*;
-use byteorder::ReadBytesExt;
+use byteorder::{LittleEndian, ReadBytesExt};
 use saturating::Saturating as S;
 
 use crate::{
@@ -1161,7 +1161,7 @@ impl<'a> OptionalMetadataIter<'a> {
         let t = self.data.read_u8()?;
         let l = match self.data.read_u8()? {
             252 => {
-                self.data.read_u16()? as usize
+                self.data.read_u16::<LittleEndian>()? as usize
             },
             t => {
                 t as usize
