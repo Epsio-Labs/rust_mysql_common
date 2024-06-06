@@ -1159,7 +1159,14 @@ impl<'a> OptionalMetadataIter<'a> {
     /// Reads type-length-value value.
     fn read_tlv(&mut self) -> io::Result<(RawConst<u8, OptionalMetadataFieldType>, &'a [u8])> {
         let t = self.data.read_u8()?;
-        let l = self.data.read_u8()? as usize;
+        let l = match self.data.read_u8()? {
+            252 => {
+                self.data.read_u16()? as usize
+            },
+            t => {
+                t as usize
+            }
+        };
         println!("TLV -> Type={}: Length={}\n", t, l);
         let v = match self.data.get(..l) {
             Some(v) => v,
