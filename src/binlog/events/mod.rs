@@ -122,12 +122,8 @@ impl Event {
         input.read_exact(&mut header_buf)?;
         let header = BinlogEventHeader::deserialize((), &mut ParseBuf(&header_buf))?;
 
-        println!("header: {:?}", header);
-
         let mut data = vec![0_u8; (S(header.event_size() as usize) - S(binlog_header_len)).0];
         input.read_exact(&mut data).unwrap();
-
-        println!("data: {:?}", data);
 
         let is_fde = header.event_type.0 == EventType::FORMAT_DESCRIPTION_EVENT as u8;
         let mut bytes_to_truncate = 0;
