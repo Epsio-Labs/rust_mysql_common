@@ -1207,8 +1207,9 @@ impl<'a> Iterator for OptionalMetadataIter<'a> {
 
         self.next_tlv()?
             .and_then(|(t, v)| {
-                print!("Optional metadata= {}: ", t.0);
+                print!("Type={}: ", t.0);
                 let mut v = ParseBuf(v);
+                print!("Metadata={:?}: ", v);
                 match t.get() {
                     Ok(t) => match t {
                         SIGNEDNESS => {
